@@ -133,7 +133,7 @@ function displayResult(data) {
   hide(loader);
   
   // Display prediction result
-  predResult.innerHTML = data.result;
+  predResult.innerHTML = `<strong>Diagnosis:</strong> ${data.result}<br><strong>Confidence:</strong> ${(data.probability * 100).toFixed(2)}%`;
   show(predResult);
   
   // Create or get recommendation element
@@ -157,6 +157,11 @@ function displayResult(data) {
   } else {
     recommendationElement.classList.add("hidden");
   }
+
+  // Update current disease and show chat button
+  currentDisease = data.result;
+  document.getElementById('openChat').style.display = 'block';
+  document.getElementById('openChat').textContent = `Ask About ${currentDisease}`;
 }
 
 function hide(el) {
@@ -167,4 +172,135 @@ function hide(el) {
 function show(el) {
   // show an element
   el.classList.remove("hidden");
+}
+
+// Add this to your existing JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+  const openChatBtn = document.getElementById('openChat');
+  const chatContainer = document.getElementById('chatContainer');
+  const closeChatBtn = document.getElementById('closeChat');
+  const sendMessageBtn = document.getElementById('sendMessage');
+  const userMessageInput = document.getElementById('userMessage');
+  const chatMessages = document.getElementById('chatMessages');
+  
+  // let currentDisease = '';
+  
+  // Open chat when the button is clicked
+  openChatBtn.addEventListener('click', function() {
+      chatContainer.style.display = 'block';
+      openChatBtn.style.display = 'none';
+      addMessage('assistant', 'Hello! I can help answer questions about ' + currentDisease + 
+                '. What would you like to know about symptoms, treatments, or when to see a doctor?');
+  });
+  
+  // Close chat
+  closeChatBtn.addEventListener('click', function() {
+      chatContainer.style.display = 'none';
+      openChatBtn.style.display = 'block';
+  });
+  
+  // Send message
+  sendMessageBtn.addEventListener('click', sendMessage);
+  userMessageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+  });
+  
+  function sendMessage() {
+      const message = userMessageInput.value.trim();
+      if (message) {
+          addMessage('user', message);
+          userMessageInput.value = '';
+          
+          // Send to server
+          fetch('/chat', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  message: message,
+                  disease_context: currentDisease
+              })
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.response) {
+                  addMessage('assistant', data.response);
+              } else if (data.error) {
+                  addMessage('assistant', 'Sorry, I encountered an error: ' + data.error);
+              }
+          })
+          .catch(error => {
+              addMessage('assistant', 'Sorry, I couldn\'t process your request.');
+              console.error('Error:', error);
+          });
+      }
+  }
+  
+  function addMessage(sender, text) {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = sender === 'user' ? 'user-message' : 'assistant-message';
+    messageDiv.style.textAlign = sender === 'user' ? 'right' : 'left';
+    messageDiv.style.margin = '5px';
+    messageDiv.style.padding = '8px';
+    messageDiv.style.borderRadius = '5px';
+    messageDiv.style.maxWidth = '80%'; // Ensures messages don't stretch too much
+    messageDiv.style.wordWrap = 'break-word'; // Prevents overflow issues
+    messageDiv.style.backgroundColor = sender === 'user' ? '#d1ecf1' : '#f8d7da';
+    messageDiv.innerHTML = `<strong>${sender === 'user' ? 'You' : 'Assistant'}:</strong> ${text}`;
+    
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+  
+  // In your existing prediction success handler, add:
+  // currentDisease = result.result;
+  // document.getElementById('openChat').style.display = 'block';
+});
+
+function sendMessage() {
+  const message = userMessageInput.value.trim();
+  if (message) {
+      addMessage('user', message);
+      userMessageInput.value = '';
+      
+      // Show typing indicator
+      const typingIndicator = document.createElement('div');
+      typingIndicator.id = 'typing';
+      typingIndicator.textContent = 'Assistant is typing...';
+      chatMessages.appendChild(typingIndicator);
+      chatMessages.scrollTop = chatMessages.scrollTop;
+      
+      fetch('/chat', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              message: message,
+              disease_context: currentDisease
+          })
+      })
+      .then(response => {
+          // Remove typing indicator
+          document.getElementById('typing')?.remove();
+          
+          if (!response.ok) {
+              return response.json().then(err => { throw err; });
+          }
+          return response.json();
+      })
+      .then(data => {
+          if (data.response) {
+              addMessage('assistant', data.response);
+          } else {
+              throw new Error(data.error || 'No response from server');
+          }
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          addMessage('assistant', `Error: ${error.message || 'Failed to get response'}`);
+      });
+  }
 }

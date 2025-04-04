@@ -163,3 +163,114 @@ body {
     transform: rotate(90deg);
   }
 }
+
+/* Add this to your existing CSS */
+.chat-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+.user-message {
+  background-color: #e3f2fd;
+  text-align: right;
+}
+
+.assistant-message {
+  background-color: #f5f5f5;
+  text-align: left;
+}
+/* Add these to your existing CSS */
+#openChat {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#openChat:hover {
+  background-color: #45a049;
+}
+
+.chat-container {
+  margin-top: 20px;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  width: 90%; /* Changed from 100% */
+  max-width: 800px; /* Increased from 500px */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* For the chat messages area */
+#chatMessages {
+  min-height: 200px;
+  max-height: 300px;
+  background-color: white;
+  width: 100%; /* Ensure it fills the container */
+}
+
+/* For the input group */
+.input-group {
+  display: flex;
+  width: 100%; /* Ensure it fills the container */
+}
+#userMessage {
+  flex-grow: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+#sendMessage {
+  margin-left: 10px;
+  padding: 8px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#sendMessage:hover {
+  background-color: #45a049;
+}
+
+#closeChat {
+  width: 100%;
+  padding: 8px;
+  background-color: #f44336;
+  color: white;
+}
+
+#closeChat:hover {
+  background-color: #d32f2f;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.user-message {
+  align-self: flex-end;
+  background-color: #d1ecf1;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+.assistant-message {
+  align-self: flex-start;
+  background-color: #f8d7da;
+  padding: 8px 12px;
+  border-radius: 8px;
+}

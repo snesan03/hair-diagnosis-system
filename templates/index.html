@@ -2,7 +2,7 @@
 
 <div class="main">
   <div class="title">
-    <h3>Image Classifier</h3>
+    <h3>Hair Diagnosis System</h3>
     <!-- <p>
       <small>A web app demo</small>
     </p> -->
@@ -27,6 +27,25 @@
       <circle id="spinner" cx="16" cy="16" r="14" fill="none"></circle>
     </svg>
   </div>
+  <div class="chat-container" id="chatContainer" style="display: none;">
+    <h3>Ask about your condition</h3>
+    <div id="chatMessages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;"></div>
+    <div class="input-group">
+        <input type="text" id="userMessage" class="form-control" placeholder="Ask about your condition...">
+        <button id="sendMessage" class="btn btn-primary">Send</button>
+    </div>
+    <button id="closeChat" class="btn btn-secondary mt-2">Close Chat</button>
+</div>
+<button id="openChat" class="btn btn-info mt-3" style="display: none;">Chat About This Condition</button>
+</div>
+<div class="chat-container" id="chatContainer" style="display: none;">
+  <h3>Ask about your condition</h3>
+  <div id="chatMessages" style="height: 300px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;"></div>
+  <div class="input-group">
+      <input type="text" id="userMessage" class="form-control" placeholder="Ask about your condition...">
+      <button id="sendMessage" class="btn btn-primary">Send</button>
+  </div>
+  <button id="closeChat" class="btn btn-secondary mt-2">Close Chat</button>
 </div>
 
 {% endblock %}
